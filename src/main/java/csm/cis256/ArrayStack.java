@@ -48,7 +48,7 @@ public class ArrayStack<T> {
         T element = data[size - 1];
 
         // Avoid memory leak: nullify the reference so GarbageCollector can recycle it
-        data[size - 1] == null;
+        data[size - 1] = null;
 
         size--;
 
