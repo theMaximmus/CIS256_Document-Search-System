@@ -58,6 +58,31 @@ public class LinkedList<T> {
         add(value);
     }
 
+    // inserts value at index; ignores invalid indexes
+    public void addAt(int index, T value) {
+        if (index < 0 || index > size) return;
+
+        ListNode<T> n = new ListNode<>(value);
+
+        if (index == 0) { // insert at head
+            n.next = head;
+            head = n;
+            if (tail == null) tail = n;
+        } else if (index == size) { // append to tail
+            tail.next = n;
+            tail = n;
+        } else { // insert in the middle
+            ListNode<T> prev = head;
+            for (int i = 0; i < index - 1; i++) {
+                prev = prev.next;
+            }
+            n.next = prev.next;
+            prev.next = n;
+        }
+
+        size++;
+    }
+
     // used by queue
     public void removeHead() {
         if (head == null) return;
