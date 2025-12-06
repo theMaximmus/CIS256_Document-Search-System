@@ -12,6 +12,7 @@ public class ArrayStack<T> {
     }
 
     public void push(T item) {
+        if (top == data.length) resize();
         data[top++] = item;
     }
 
@@ -36,5 +37,12 @@ public class ArrayStack<T> {
     // ⭐ Add this — required for HistoryManager
     public void clear() {
         top = 0;
+    }
+
+    @SuppressWarnings("unchecked")
+    private void resize() {
+        T[] newData = (T[]) new Object[data.length + 1000];
+        System.arraycopy(data, 0, newData, 0, data.length);
+        data = newData;
     }
 }
