@@ -2,18 +2,8 @@ package csm.cis256;
 
 public class LinkedList<T> {
 
-    public static class Node<T> {
-        public T data;
-        public Node<T> next;
-
-        public Node(T d) {
-            data = d;
-            next = null;
-        }
-    }
-
-    private Node<T> head;
-    private Node<T> tail;
+    private ListNode<T> head;
+    private ListNode<T> tail;
     private int size;
 
     public LinkedList() {
@@ -31,12 +21,12 @@ public class LinkedList<T> {
     }
 
     // required by SearchEngine + InvertedIndex tests
-    public Node<T> getHead() {
+    public ListNode<T> getHead() {
         return head;
     }
 
     // required by Tokenizer + SearchEngine tests
-    public Node<T> getTail() {
+    public ListNode<T> getTail() {
         return tail;
     }
 
@@ -52,7 +42,7 @@ public class LinkedList<T> {
 
     // THIS MUST WORK PERFECTLY (fixes the NPE problems)
     public void add(T value) {
-        Node<T> n = new Node<>(value);
+        ListNode<T> n = new ListNode<>(value);
         if (head == null) {
             head = n;
             tail = n;
@@ -86,7 +76,7 @@ public class LinkedList<T> {
             return;
         }
 
-        Node<T> curr = head;
+        ListNode<T> curr = head;
         while (curr.next != tail) {
             curr = curr.next;
         }
@@ -105,12 +95,12 @@ public class LinkedList<T> {
             return;
         }
 
-        Node<T> prev = head;
+        ListNode<T> prev = head;
         for (int i = 0; i < index - 1; i++) {
             prev = prev.next;
         }
 
-        Node<T> removed = prev.next;
+        ListNode<T> removed = prev.next;
         prev.next = removed.next;
 
         if (removed == tail) {
