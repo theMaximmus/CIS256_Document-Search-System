@@ -5,7 +5,11 @@ import java.util.Collections;
 import java.util.List;
 
 public class PerformanceTests {
-
+    /**
+     * Helper method to get the current time in nanoseconds.
+     * We use nanoTime() instead of currentTimeMillis() because it offers
+     * much higher precision for measuring fast operations.
+     */
     private static long now() {
         return System.nanoTime();
     }

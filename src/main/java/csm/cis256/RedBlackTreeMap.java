@@ -6,6 +6,8 @@ package csm.cis256;
  * Supports put() and get().
  *
  * This is a lightweight version meant for the CIS256 project tests.
+ * @param <K> The type of keys (must be Comparable)
+ * @param <V> The type of mapped values
  */
 public class RedBlackTreeMap<K extends Comparable<K>, V> {
 
@@ -33,14 +35,28 @@ public class RedBlackTreeMap<K extends Comparable<K>, V> {
         size = 0;
     }
 
-    /** PUBLIC PUT */
+    /**
+     * Associates the specified value with the specified key.
+     * New nodes are always inserted as RED to preserve black balance,
+     * possibly violating other invariants that are fixed during recursion unwinding.
+     *
+     * @param key The key
+     * @param value The value
+     */
     public void put(K key, V value) {
         if (key == null) return;
         root = insert(root, key, value);
         root.color = BLACK;  // root must always be black
     }
 
-    /** Recursive insert with rebalancing */
+    /**
+     * Recursive insert that fixes LLRB invariants on the way up.
+     *
+     * @param h The root of the subtree
+     * @param key The key to insert
+     * @param value The value to associate
+     * @return The new root of the subtree
+     */
     private Node insert(Node h, K key, V value) {
 
         if (h == null) {
@@ -89,10 +105,17 @@ public class RedBlackTreeMap<K extends Comparable<K>, V> {
     }
 
     /** Helpers */
+
+    /**
+     * Checks the color of a node. Null nodes are considered BLACK.
+     */
     private boolean isRed(Node n) {
         return n != null && n.color == RED;
     }
 
+    /**
+    * Fixes right-leaning red links.
+    */
     private Node rotateLeft(Node h) {
         Node x = h.right;
         h.right = x.left;
@@ -104,6 +127,9 @@ public class RedBlackTreeMap<K extends Comparable<K>, V> {
         return x;
     }
 
+    /**
+    * Fixes two red links in a row on the left.
+    */
     private Node rotateRight(Node h) {
         Node x = h.left;
         h.left = x.right;
@@ -115,6 +141,9 @@ public class RedBlackTreeMap<K extends Comparable<K>, V> {
         return x;
     }
 
+    /**
+     * Splits a temporary 4-node (a node with two red children).
+     */
     private void flipColors(Node h) {
         h.color = RED;
         if (h.left != null) h.left.color = BLACK;

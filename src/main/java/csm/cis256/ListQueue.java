@@ -1,5 +1,9 @@
 package csm.cis256;
 
+/**
+ * A standard Queue implementation (First-In-First-Out).
+ *
+ */
 public class ListQueue<T> {
 
     private LinkedList<T> list;
@@ -8,12 +12,17 @@ public class ListQueue<T> {
         list = new LinkedList<>();
     }
 
-    // Add to the back of the queue
+    /**
+     * Adds an item to the back of the line.
+     * @param item Item to be added.
+     */
     public void enqueue(T item) {
         list.append(item);
     }
 
-    // Remove from the front of the queue
+    /**
+     * Removes and returns the item at the front of the queue.
+     */
     public T dequeue() {
         if (list.size() == 0) {
             return null;   // tests expect null on empty dequeue
@@ -24,7 +33,10 @@ public class ListQueue<T> {
         return value;
     }
 
-    // Look at the front item
+    /**
+     * Checks for the item in the front without removing it.
+     * @return
+     */
     public T front() {
         if (list.size() == 0) {
             return null;   // tests expect null on empty front()

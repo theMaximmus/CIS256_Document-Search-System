@@ -3,10 +3,15 @@ package csm.cis256;
 /**
  * A simple HashMap implementation using Separate Chaining.
  * Supports put, get, remove, containsKey, size, isEmpty.
+ * @param <K> The type of keys
+ * @param <V> The type of mapped values
  */
 public class HashMap<K, V> {
 
-    // Node for the bucket linked lists
+    /**
+     * Internal node structure for the bucket linked lists.
+     * Each entry holds a key-value pair and a pointer to the next entry in the chain.
+     */
     private static class Entry<K, V> {
         K key;
         V value;
@@ -19,10 +24,12 @@ public class HashMap<K, V> {
         }
     }
 
+    // The array of buckets. Each slot holds the head of a linked list.
     private Entry<K, V>[] buckets;
     private int size;
-
+    // Initial size of the bucket array.
     private static final int INITIAL_CAPACITY = 11;
+    // The threshold at which we resize the table.
     private static final double LOAD_FACTOR = 0.75;
 
     @SuppressWarnings("unchecked")
@@ -31,7 +38,16 @@ public class HashMap<K, V> {
         size = 0;
     }
 
-    /** Compute which bucket a key belongs in */
+    /**
+     * Computes the index in the bucket array for a given key.
+     *
+     * We use the key's hashCode(), apply a bitwise mask (0x7FFFFFFF) to ensure
+     * the result is positive, and then use the modulo operator (%) to wrap it
+     * within the array bounds.
+     *
+     * @param key The key
+     * @return The index of the bucket
+     */
     private int getBucketIndex(K key) {
         return (key.hashCode() & 0x7FFFFFFF) % buckets.length;
     }
@@ -51,7 +67,13 @@ public class HashMap<K, V> {
         }
     }
 
-    /** Insert or update key/value */
+    /**
+     * Associates the specified value with the specified key in this map.
+     * If the map previously contained a mapping for the key, the old value is replaced.
+     *
+     * @param key Key with which the specified value is to be associated
+     * @param value Value to be associated with the specified key
+     */
     public void put(K key, V value) {
         if (key == null) throw new IllegalArgumentException("Key is null");
 
@@ -78,7 +100,10 @@ public class HashMap<K, V> {
         size++;
     }
 
-    /** Look up a key */
+    /**
+     * Returns the value to which the specified key is mapped,
+     * or null if this map contains no mapping for the key.
+     */
     public V get(K key) {
         if (key == null) return null;
 
@@ -95,7 +120,10 @@ public class HashMap<K, V> {
         return null;
     }
 
-    /** Remove an entry by key */
+    /**
+     * Removes the mapping for the specified key from this map if present.
+     * @param key Specified key
+     */
     public void remove(K key) {
         if (key == null) return;
 
@@ -118,7 +146,10 @@ public class HashMap<K, V> {
         }
     }
 
-    /** ✔ Required by tests */
+    /**
+     * Returns true if this map contains a mapping for the specified key.
+     * @param key Specified key
+     */
     public boolean containsKey(K key) {
         if (key == null) return false;
 

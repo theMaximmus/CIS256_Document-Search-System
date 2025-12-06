@@ -20,12 +20,11 @@ public class LinkedList<T> {
         return size == 0;
     }
 
-    // required by SearchEngine + InvertedIndex tests
+    // Helper method to get the actual node objects.
     public ListNode<T> getHead() {
         return head;
     }
 
-    // required by Tokenizer + SearchEngine tests
     public ListNode<T> getTail() {
         return tail;
     }
@@ -40,7 +39,6 @@ public class LinkedList<T> {
         return tail.data;
     }
 
-    // THIS MUST WORK PERFECTLY (fixes the NPE problems)
     public void add(T value) {
         ListNode<T> n = new ListNode<>(value);
         if (head == null) {
@@ -83,7 +81,6 @@ public class LinkedList<T> {
         size++;
     }
 
-    // used by queue
     public void removeHead() {
         if (head == null) return;
         head = head.next;
@@ -111,7 +108,6 @@ public class LinkedList<T> {
         size--;
     }
 
-    // used by removeAt
     public void removeAt(int index) {
         if (index < 0 || index >= size) return;
 
