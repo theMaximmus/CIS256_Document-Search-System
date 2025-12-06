@@ -1,0 +1,86 @@
+================================================================================
+USER GUIDE: CIS256 DOCUMENT SEARCH ENGINE
+================================================================================
+
+1. SETUP REQUIREMENTS
+---------------------
+Before running the search engine, you must ensure the following:
+
+   A. 'documents' Folder
+      - Your project directory must contain a folder named "documents".
+      - Inside this folder, place the .txt files you want to search (e.g., doc1.txt, doc2.txt).
+      - If this folder is missing or empty, the indexer will have nothing to search.
+
+   B. Compilation
+      - Ensure all Java files in 'src/main/java/csm/cis256' are compiled.
+      - If using an IDE (IntelliJ/Eclipse), simply run the 'Main' class.
+      - If using the command line, compile all files and run 'csm.cis256.Main'.
+
+2. HOW TO RUN
+-------------
+   Run the main class: csm.cis256.Main
+
+   On startup, the system will:
+   1. Print "Indexing 'documents' folder..."
+   2. Read all text files in that directory.
+   3. Build the Inverted Index in memory.
+   4. Display the command prompt ">>".
+
+3. SEARCHING
+------------
+   To search for documents, simply type your search terms at the prompt.
+
+   * Single Word Search:
+     >> apple
+     (Returns a ranked list of documents containing "apple")
+
+   * Multi-Word Search (AND Search):
+     >> quick fox
+     (Returns documents that contain BOTH "quick" AND "fox", ranked by combined frequency)
+
+4. NAVIGATION & COMMANDS
+------------------------
+   The search engine supports a "browser-like" history. You can view documents
+   and navigate back and forward through your viewing history.
+
+   * View a Document:
+     >> :view doc1.txt
+     (Simulates opening "doc1.txt". This adds the document to your history stack.)
+
+   * Go Back:
+     >> :back
+     (Returns to the previously viewed document.)
+
+   * Go Forward:
+     >> :forward
+     (Returns to the document you were on before clicking back.)
+
+   * Check History:
+     >> :history
+     (Displays the current document you are viewing.)
+
+   * Quit:
+     >> :quit
+     (Exits the program.)
+
+5. EXAMPLE SESSION
+------------------
+   >> quick
+      Found in documents (Ranked):
+      1. doc1.txt
+      2. doc2.txt
+
+   >> :view doc1.txt
+      Now viewing: doc1.txt
+
+   >> :view doc3.txt
+      Now viewing: doc3.txt
+
+   >> :back
+      Went back to: doc1.txt
+
+   >> :forward
+      Went forward to: doc3.txt
+
+   >> :quit
+      Goodbye!

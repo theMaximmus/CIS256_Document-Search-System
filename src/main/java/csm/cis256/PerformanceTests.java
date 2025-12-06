@@ -21,7 +21,7 @@ public class PerformanceTests {
     public static void testTreeInsertions() {
         System.out.println("\n--- Tree Insertion Performance ---");
 
-        int n = 20000;
+        int n = 50000;
         Integer[] data = new Integer[n];
         for (int i = 0; i < n; i++) {
             data[i] = i;   // sorted on purpose
@@ -83,7 +83,7 @@ public class PerformanceTests {
     public static void testSearching() {
         System.out.println("\n--- Searching Performance ---");
 
-        int n = 1000000;
+        int n = 50000;
         String[] arr = new String[n];
         for (int i = 0; i < n; i++) {
             arr[i] = "" + i;
