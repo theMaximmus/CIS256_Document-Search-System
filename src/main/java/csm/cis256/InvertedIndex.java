@@ -2,7 +2,7 @@ package csm.cis256;
 
 public class InvertedIndex {
 
-    private HashMap<String, LinkedList<String>> index;
+    private HashMap<String, LinkedList<DocData>> index;
 
     public InvertedIndex() {
         index = new HashMap<>();
@@ -12,46 +12,48 @@ public class InvertedIndex {
         if (docName == null || words == null || words.size() == 0) return;
 
         ListNode<String> curr = words.getHead();
-        if (curr == null) return; // SAFETY — prevents NPE
-
         while (curr != null) {
-
             String w = curr.data;
             if (w != null) {
                 w = w.toLowerCase();
 
-                LinkedList<String> docs = index.get(w);
+                LinkedList<DocData> docs = index.get(w);
                 if (docs == null) {
                     docs = new LinkedList<>();
                     index.put(w, docs);
                 }
 
-                // only add once
-                if (!contains(docs, docName)) {
-                    docs.add(docName);
+                // Check if document already exists in the list
+                boolean found = false;
+                ListNode<DocData> docNode = docs.getHead();
+                while (docNode != null) {
+                    if (docNode.data.docId.equals(docName)) {
+                        docNode.data.frequency++; // Increment frequency
+                        found = true;
+                        break;
+                    }
+                    docNode = docNode.next;
+                }
+
+                // If not found, add new DocData entry
+                if (!found) {
+                    docs.add(new DocData(docName, 1));
                 }
             }
-
             curr = curr.next;
         }
     }
 
-    private boolean contains(LinkedList<String> list, String value) {
-        if (list == null || list.size() == 0) return false;
-
-        ListNode<String> n = list.getHead();
-        while (n != null) {
-            if (value.equals(n.data)) return true;
-            n = n.next;
+    public LinkedList<DocData> getDocuments(String word) {
+        if (word == null) {
+            return new LinkedList<>();
         }
-        return false;
-    }
 
-    public LinkedList<String> getDocuments(String word) {
-        if (word == null) return new LinkedList<>();
+        LinkedList<DocData> result = index.get(word.toLowerCase());
+        if (result == null) {
+            return new LinkedList<>();
+        }
 
-        LinkedList<String> result = index.get(word.toLowerCase());
-        if (result == null) return new LinkedList<>();
         return result;
     }
 }

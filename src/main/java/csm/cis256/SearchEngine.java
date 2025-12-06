@@ -12,9 +12,6 @@ public class SearchEngine {
         history = new HistoryManager();
     }
 
-    // -------------------------------
-    // INDEXING
-    // -------------------------------
     public void indexDirectory(String folderName) {
         File folder = new File(folderName);
         if (!folder.exists() || !folder.isDirectory()) {
@@ -22,7 +19,9 @@ public class SearchEngine {
         }
 
         File[] files = folder.listFiles();
-        if (files == null) return;
+        if (files == null) {
+            return;
+        }
 
         for (File f : files) {
             if (f.isFile()) {
@@ -32,75 +31,83 @@ public class SearchEngine {
         }
     }
 
-    // -------------------------------
-    // SINGLE WORD SEARCH
-    // -------------------------------
     public LinkedList<String> searchOneWord(String word) {
         if (word == null) {
-            history.view("SEARCH: null");
             return new LinkedList<>();
         }
-
         history.view("SEARCH: " + word);
-        return index.getDocuments(word);
+
+        // Get Raw Data
+        LinkedList<DocData> rawResults = index.getDocuments(word);
+
+        // Sort Results
+        return rankAndFormat(rawResults);
     }
 
-    // -------------------------------
-    // MULTI-WORD SEARCH
-    // -------------------------------
     public LinkedList<String> searchAllWords(String wordsInput) {
         if (wordsInput == null || wordsInput.trim().isEmpty()) {
-            history.view("SEARCH: (empty)");
+            return new LinkedList<>();
+        }
+        history.view("SEARCH: " + wordsInput);
+
+        String[] words = wordsInput.toLowerCase().split("\\s+");
+        LinkedList<DocData> result = index.getDocuments(words[0]);
+
+        // Intersect results for subsequent words
+        for (int i = 1; i < words.length; i++) {
+            LinkedList<DocData> nextDocs = index.getDocuments(words[i]);
+            result = intersect(result, nextDocs);
+        }
+
+        return rankAndFormat(result);
+    }
+
+    // Sorts DocData and converts to List<String>
+    private LinkedList<String> rankAndFormat(LinkedList<DocData> rawData) {
+        if (rawData.isEmpty()) {
             return new LinkedList<>();
         }
 
-        // tests expect: convert string into individual tokens
-        String[] words = wordsInput.toLowerCase().split("\\s+");
-
-        history.view("SEARCH: " + wordsInput);
-
-        // Start with documents that contain the FIRST word
-        LinkedList<String> result = index.getDocuments(words[0]);
-
-        // For each next word, intersect results
-        for (int i = 1; i < words.length; i++) {
-            String w = words[i];
-            LinkedList<String> docs = index.getDocuments(w);
-            result = intersect(result, docs);
+        // Convert to Array for Sorting
+        DocData[] arr = new DocData[rawData.size()];
+        ListNode<DocData> curr = rawData.getHead();
+        int i = 0;
+        while (curr != null) {
+            arr[i++] = curr.data;
+            curr = curr.next;
         }
 
-        return result;
+        DocDataSorter.sort(arr);
+
+        // Convert back to LinkedList<String> (names only)
+        LinkedList<String> sortedNames = new LinkedList<>();
+        for (DocData d : arr) {
+            sortedNames.add(d.docId);
+        }
+        return sortedNames;
     }
 
-    // -------------------------------
-    // INTERSECTION HELPER
-    // -------------------------------
-    private LinkedList<String> intersect(LinkedList<String> a, LinkedList<String> b) {
-        LinkedList<String> out = new LinkedList<>();
+    private LinkedList<DocData> intersect(LinkedList<DocData> listA, LinkedList<DocData> listB) {
+        LinkedList<DocData> out = new LinkedList<>();
 
-        ListNode<String> n = a.getHead();
-        while (n != null) {
-            if (contains(b, n.data)) {
-                out.append(n.data);
+        ListNode<DocData> nodeA = listA.getHead();
+        while (nodeA != null) {
+            // Check if this doc exists in listB
+            ListNode<DocData> nodeB = listB.getHead();
+            while (nodeB != null) {
+                if (nodeA.data.docId.equals(nodeB.data.docId)) {
+                    // Combine frequencies: Score = FreqA + FreqB
+                    int combinedFreq = nodeA.data.frequency + nodeB.data.frequency;
+                    out.add(new DocData(nodeA.data.docId, combinedFreq));
+                    break;
+                }
+                nodeB = nodeB.next;
             }
-            n = n.next;
+            nodeA = nodeA.next;
         }
-
         return out;
     }
 
-    private boolean contains(LinkedList<String> list, String target) {
-        ListNode<String> n = list.getHead();
-        while (n != null) {
-            if (n.data.equals(target)) return true;
-            n = n.next;
-        }
-        return false;
-    }
-
-    // -------------------------------
-    // HISTORY ACCESS
-    // -------------------------------
     public HistoryManager getHistory() {
         return history;
     }
