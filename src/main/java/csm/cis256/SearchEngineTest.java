@@ -21,13 +21,11 @@ class SearchEngineTest {
         // Expected: hello, world, hello
         assertEquals(3, tokens.size());
         assertEquals("hello", tokens.peekHead());
-        assertEquals("hello", tokens.peekTail()); // if append order is maintained
+        assertEquals("hello", tokens.peekTail());
     }
 
     @Test
     void testSearchEngineLogic() {
-        SearchEngine engine = new SearchEngine();
-
         InvertedIndex index = new InvertedIndex();
         LinkedList<String> doc1Words = new LinkedList<>();
         doc1Words.add("apple");
@@ -41,17 +39,54 @@ class SearchEngineTest {
         index.addDocument("doc2", doc2Words);
 
         // Search "apple" -> doc1
-        LinkedList<String> res1 = index.getDocuments("apple");
+        LinkedList<DocData> res1 = index.getDocuments("apple");
         assertEquals(1, res1.size());
-        assertEquals("doc1", res1.peekHead());
+        // We must now access .docId because the list contains DocData objects
+        assertEquals("doc1", res1.peekHead().docId);
 
         // Search "banana" -> doc1, doc2
-        LinkedList<String> res2 = index.getDocuments("banana");
+        LinkedList<DocData> res2 = index.getDocuments("banana");
         assertEquals(2, res2.size());
 
         // Search "cherry" -> doc2
-        LinkedList<String> res3 = index.getDocuments("cherry");
+        LinkedList<DocData> res3 = index.getDocuments("cherry");
         assertEquals(1, res3.size());
-        assertEquals("doc2", res3.peekHead());
+        assertEquals("doc2", res3.peekHead().docId);
+    }
+
+    @Test
+    void testSearchRanking() {
+        InvertedIndex index = new InvertedIndex();
+
+        LinkedList<String> doc1Words = new LinkedList<>();
+        doc1Words.add("apple"); doc1Words.add("apple"); doc1Words.add("apple");
+
+        LinkedList<String> doc2Words = new LinkedList<>();
+        doc2Words.add("apple");
+
+        LinkedList<String> doc3Words = new LinkedList<>();
+        doc3Words.add("apple"); doc3Words.add("apple"); doc3Words.add("apple");
+        doc3Words.add("apple"); doc3Words.add("apple");
+
+        index.addDocument("doc1", doc1Words);
+        index.addDocument("doc2", doc2Words);
+        index.addDocument("doc3", doc3Words);
+
+        LinkedList<DocData> results = index.getDocuments("apple");
+
+        // Convert LinkedList to Array to use Sorter for verification
+        DocData[] arr = new DocData[results.size()];
+        int i = 0;
+        ListNode<DocData> curr = results.getHead();
+        while(curr != null) {
+            arr[i++] = curr.data;
+            curr = curr.next;
+        }
+
+        DocDataSorter.sort(arr);
+
+        assertEquals("doc3", arr[0].docId);
+        assertEquals("doc1", arr[1].docId);
+        assertEquals("doc2", arr[2].docId);
     }
 }
