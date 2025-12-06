@@ -12,7 +12,7 @@ public class ArrayStack<T> {
     }
 
     public void push(T item) {
-        if (top == data.length) resize();
+        if (top == data.length - 1) resize();
         data[top++] = item;
     }
 
