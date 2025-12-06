@@ -1,6 +1,6 @@
 /**
  * Project
- * Authors: Maksym Stesev, Alex Mechtnikov, Alex Bombita.
+ * Authors: Maksym Stesev, Alex Menchtchikov, Alex Bombita.
  */
 package csm.cis256;
 
