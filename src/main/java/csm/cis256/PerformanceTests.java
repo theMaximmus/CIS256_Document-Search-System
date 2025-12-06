@@ -1,5 +1,9 @@
 package csm.cis256;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 public class PerformanceTests {
 
     private static long now() {
@@ -23,6 +27,9 @@ public class PerformanceTests {
             data[i] = i;   // sorted on purpose
         }
 
+        List<Integer> list = Arrays.asList(data);
+        Collections.shuffle(list);
+        list.toArray(data);
         BSTMap<Integer, Integer> bst = new BSTMap<>();
         AVLTreeMap<Integer, Integer> avl = new AVLTreeMap<>();
         RedBlackTreeMap<Integer, Integer> rb = new RedBlackTreeMap<>();
